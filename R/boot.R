@@ -88,7 +88,7 @@ boot_quantiles <- function(tbl, statistic, reps = 1e4) {
     mutate(boot_stat = data %>%
       map(boot, statistic = statistic, R = reps)) %>%
     # Calculate quantiles from the bootstrapped sample
-    mutate(quantiles = boot_stat %>%
+      mutate(quantiles = boot_stat %>%
       map(calc_bca_quantiles)) %>%
     select(-data, -boot_stat) %>%
     unnest
@@ -126,7 +126,7 @@ boot_centered_null <- function(
 #' @importFrom boot boot.ci
 #' @importFrom tibble tibble
 calc_bca_quantiles <- function(boot_object) {
-  if (is.na(boot_object$t0[1])) {
+  if (is.na(boot_object$t0[2])) {
     output <- tibble(ci1 = NA, q25 = NA, q75 = NA, ci2 = NA)
   } else {
     ci <- boot.ci(boot_object)$bca[4:5]
