@@ -67,7 +67,6 @@ boot_compare_all <- function(
   )
 }
 
-
 #' Bootstrap a statistic across a table and produce bca ci and quantiles
 #'
 #' @param tbl A tibble
@@ -79,17 +78,14 @@ boot_compare_all <- function(
 #' @importFrom magrittr "%>%"
 #' @importFrom boot boot
 #' @export
-boot_quantiles <- function(tbl, statistic, reps = 1e4) {
+boot_quantiles <- function(tbl, statistic, reps=1e4) {
+  # Calculate the statistic on each group in the input table
   tbl %>%
-    # Calculate the statistic on each group in the input table
-    mutate(value = data %>%
-      map_dbl(~statistic(., 1:nrow(.))[1])) %>%
-    # Bootstrap the statistic across the table
-    mutate(boot_stat = data %>%
-      map(boot, statistic = statistic, R = reps)) %>%
-    # Calculate quantiles from the bootstrapped sample
-      mutate(quantiles = boot_stat %>%
-      map(calc_bca_quantiles)) %>%
+    mutate(value = data %>% map_dbl(~statistic(., 1:nrow(.))[1])) %>%
+  # Bootstrap the statistic across the table
+    mutate(boot_stat = data %>% map(boot, statistic=statistic, R=reps)) %>%
+  # Calculate quantiles from the bootstrapped sample
+    mutate(quantiles = boot_stat %>% map(calc_bca_quantiles)) %>%
     select(-data, -boot_stat) %>%
     unnest
 }
