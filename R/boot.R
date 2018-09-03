@@ -122,7 +122,8 @@ boot_centered_null <- function(
 #' @importFrom boot boot.ci
 #' @importFrom tibble tibble
 calc_bca_quantiles <- function(boot_object) {
-  if (is.na(boot_object$t0[2])) {
+  variance <- boot_object$t0[2]
+  if (is.na(variance) || (variance == 0)) {
     output <- tibble(ci1 = NA, q25 = NA, q75 = NA, ci2 = NA)
   } else {
     ci <- boot.ci(boot_object)$bca[4:5]
@@ -131,7 +132,8 @@ calc_bca_quantiles <- function(boot_object) {
       ci1 = ci[1],
       q25 = quantiles[1],
       q75 = quantiles[2],
-      ci2 = ci[2])
+      ci2 = ci[2]
+    )
   }
   output
 }
